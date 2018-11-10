@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>个人主页</title>
+	<style>
+		*{
+			margin: 0px;
+			padding: 0px;
+			list-style: none;
+		}
+		div.sigh{
+			position: fixed;
+			top: 50px;
+			right: 14%;
+			width: 36px;
+			height: 36px;
+			border: 1px solid #ccc;
+			box-shadow: 0px 0px 3px 1px #aaa;
+			box-sizing: border-box;
+			padding: 2px 0px;
+			cursor: pointer;
+			border-radius: 3px;
+			z-index: 2;
+		}
+		ul.si-ul{
+			padding-top: 10px;
+			width: 100px;
+			position: absolute;
+			left: -11px;
+			top: 37px;
+			line-height: 30px;
+			border: 1px solid #ccc;
+			border-top: none;
+			background: #fff;
+			display: none;
+		}
+		ul.si-ul li{
+			padding-left: 10px;
+		}
+		ul.si-ul li:hover{
+			cursor: pointer;
+			background: #ccc;
+		}
+		hr{
+			height: 4px;
+			background: #333;
+			margin: 3px 0px;
+			border-radius: 25px;
+		}
+		section{
+			width: 600px;
+			margin-top: 100px;
+			margin-left: auto;
+			margin-right: auto;
+			border: 1px solid #ccc;
+			box-shadow: 0px 0px 3px 1px #aaa;
+			border-radius: 3px;	
+			padding-top: 10px;
+		}
+		div.con{
+			overflow: hidden;
+			margin-bottom: 15px;
+
+		}
+		aside{
+			float: left;
+		}
+		aside.left{
+			
+			color: #333;
+			font-size: 15px;
+			font-weight: 400;
+			text-align: center;
+			width: 150px;
+			padding: 15px 0px;
+		}
+		aside.right{
+			width: 420px;
+			text-align: center;
+			border: 1px solid #ccc;
+		}
+		#txt{
+			width:400px;
+			height: 50px;
+			text-indent: 2em;
+			border: none;
+			outline: none;
+			resize: none;
+		}
+	</style>
+</head>
+<body>
+	<section>
+		<div class="sigh">
+			<hr>
+			<hr>
+			<hr>
+			<ul class="si-ul">
+				<li class="pers">个人主页</li>
+				<li class="send">发布文章</li>
+				<li class="exit">退出</li>
+			</ul>
+		</div>
+		<% if(art.length==0){ %>
+			<div class="con">
+				<aside class="left"><%= user %></aside>
+				<aside class="right">
+					<b>未曾发布文章！</b>
+					<textarea name="txt" id="txt"></textarea>
+				</aside>
+			</div>
+		<% }else{ %>
+				<% for(var i=0;i<art.length;i++){ %>
+					<div class="con">
+						<aside class="left"><%= user %></aside>
+						<aside class="right">
+							<b><%= art[i].title %></b>
+							<textarea name="txt" id="txt"><%= art[i].content %></textarea>
+						</aside>
+					</div>
+				<% } %> 
+			<% } %> 
+	</section>
+	<script src="../public/js/jquery-1.11.1.js"></script>
+	<script>
+		$('div.sigh').click(function(event) {
+			$(this).children('ul.si-ul').slideToggle();
+		});
+		$('li.exit').click(function(event) {
+			$.ajax({
+				url: 'http://localhost:8080/exit',
+				type: 'get',
+				dataType: 'json',
+				data: {param1: $('aside.left').html()},
+				success:function(res){
+					if(res.num==1){
+						location.href="http://localhost:8080/"
+					}else{
+						console.log('退出有误');
+					}
+				}
+			})
+			
+			
+		});
+		$('li.send').click(function(event) {
+			location.href="http://localhost:8080/gosend"
+		});
+		$('li.pers').click(function(event) {
+			location.href="http://localhost:8080/gopersonal"
+		});
+	</script>
+</body>
+</html>

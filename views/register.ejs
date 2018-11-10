@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>注册</title>
+	<style>
+		*{
+			margin: 0px;
+			padding: 0px;
+		}
+		body{
+			background: rgba(0, 0, 0, 0.4);
+		}
+		form{
+			position: relative;
+			text-align: center;
+			width: 300px;
+			background: #fff;
+			margin-left: auto;
+			margin-right: auto;
+			margin-top: 100px;
+			border: 1px solid skyblue;
+			box-shadow: 0px 0px 10px 1px #71dbe04d;
+			border-radius: 4px;
+			padding: 30px 10px 50px;
+		}
+		div{
+			overflow: hidden;
+		}
+		div.pass{
+			margin-top: 10px;
+			padding-left: 11px;
+		}
+		label{
+			float: left;
+		}
+		input{
+			box-sizing: border-box;
+			padding-left: 10px;
+			width: 232px;
+			line-height: 20px;
+			float: left;
+		}
+		span{
+			width: 100%;
+			display: inline-block;
+		}
+		span.warn{
+			color: red;
+			font-size: 12px;
+		}
+		span.register{
+			cursor: pointer;
+			width: 90%;
+			line-height: 26px;
+			margin-top: 30px;
+			color: #fff;
+			border: 1px solid #fff;
+			background: skyblue;
+			border-radius: 3px;
+		}
+		a{
+			position: absolute;
+			right: 10px;
+			bottom: 0px;
+			font-size: 12px;
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<form action="#">
+		<div>
+			<label for="user">用户名：</label>
+			<input type="text" placeholder="用户名" name="user">
+		</div>
+		<span class="warn sp1"></span>
+		<div class="pass">
+			<label for="pass">密 码：</label>
+			<input type="text" placeholder="密码以6-10个数字、字母、_组成" name="pass">
+		</div>
+		<span class="warn sp2"></span>
+		<span class="register">注册</span>
+		<a href="http://localhost:8080/">立即登录</a>
+	</form>
+	<script src="../public/js/jquery-1.11.1.js"></script>
+	<script>
+		var num=0;
+		var pass=0;
+		$('span.warn').html('');
+		$('input[name="user"]').blur(function(event) {
+			if($(this).val()==''){
+				$('span.sp1').html('用户名不能为空！')
+			}else{
+				$('span.sp1').html('');
+				$.ajax({
+					url: 'http://localhost:8080/finduser',
+					type: 'get',
+					dataType: 'json',
+					data: {param1: $(this).val(),param2:true},
+					success:function(res){
+						console.log(1);
+						num=res.ok;
+						if(res.ok==1){
+							$('span.sp1').html('用户名已存在，请重输！')
+						}
+					}
+				})	
+			}
+		});
+		
+		$('input[name="pass"]').blur(function(event) {
+			var val=$(this).val();
+			var reg=/^\w{6,10}$/;
+			if(val.match(reg)){
+				$('span.sp2').html('');
+				pass=1;
+			}else{
+				$('span.sp2').html('密码以6-10个数字、字母、_组成！');
+			}
+		});	
+		$('input[name="user"]').focus(function(event) {
+			$('span.sp1').html('');
+		});
+		$('input[name="pass"]').focus(function(event) {
+			$('span.sp2').html('');
+		});
+		
+		$('span.register').click(function(event) {
+			if($('input[name="user"]').val()!=''&&pass==1){
+				/*if(num==2&&pass==1){	
+					location.href='http://localhost:8080/';
+				}*/
+				$.ajax({
+					url: 'http://localhost:8080/insertacc',
+					type: 'get',
+					dataType: 'json',
+					data: {param1: $('input[name="user"]').val(),param2:$('input[name="pass"]').val()},
+					success:function(res){
+						if(res.num==0){
+							console.log('用户已存在');
+						}else{
+							location.href='http://localhost:8080/';
+						}
+						
+					}
+				})
+				
+			}else{
+				console.log('不能注册')
+			}
+		});
+
+	</script>
+</body>
+</html>
